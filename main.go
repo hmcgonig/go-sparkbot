@@ -66,7 +66,7 @@ func sendMessageToSpark(message *SparkMessage) (error) {
         return err
     }
 
-    fmt.Println(string(body))
+    log.Println(string(body))
 
     // create the req object
     req, err := http.NewRequest("POST", "https://api.ciscospark.com/v1/messages", bytes.NewReader(body))
@@ -85,7 +85,7 @@ func sendMessageToSpark(message *SparkMessage) (error) {
     // error handling
     if resp.StatusCode != 200 {
         body, _ := ioutil.ReadAll(resp.Body)
-        fmt.Println(string(body))
+        log.Println(string(body))
         return errors.New(fmt.Sprintf("Message request returned status code: %s error body: %s", string(resp.StatusCode), string(body)))
     }
 
@@ -144,7 +144,7 @@ func sendImageToSpark(roomId string, path string) (error) {
     // simple error handling
     if resp.StatusCode != 200 {
         body, _ := ioutil.ReadAll(resp.Body)
-        fmt.Println(string(body))
+        log.Println(string(body))
         return errors.New(fmt.Sprintf("Message request returned status code: %s error body: %s", string(resp.StatusCode), string(body)))
     }
 
@@ -167,7 +167,7 @@ func handleMessage(message *SparkMessage) {
 
     }
 
-    fmt.Println(fmt.Sprintf("Recieved command: %s, input: %s", command, input))
+    log.Println(fmt.Sprintf("Recieved command: %s, input: %s", command, input))
 
     // handle our various commands
     switch(command) {
@@ -264,20 +264,20 @@ func handleWebhook(w http.ResponseWriter, r *http.Request) {
     // parse the webhook post data to get the message id.
     body, err := ioutil.ReadAll(r.Body)
     if err != nil {
-        fmt.Println(err.Error())
+        log.Println(err.Error())
         return
     }
 
     var sparkWebhook SparkWebhook
     if err := json.Unmarshal(body, &sparkWebhook); err != nil {
-        fmt.Println(err.Error())
+        log.Println(err.Error())
         return
     }
 
     // use the message id to get a message struct containing more message info
     message, err := getMessage(sparkWebhook.Data.Id)
     if err != nil {
-        fmt.Println(err.Error())
+        log.Println(err.Error())
         return
     }
 
