@@ -186,7 +186,7 @@ func handleMessage(message *SparkMessage) {
 
 func generateMeme(outputPath string, text string) (string, error) {
     path := "picard.jpg"
-    fontSize := 36
+    const fontSize = 36
 
     file, err := os.Open(path)
     if err != nil {
