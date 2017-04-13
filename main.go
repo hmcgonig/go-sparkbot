@@ -66,7 +66,7 @@ func sendMessageToSpark(message *SparkMessage) (error) {
         return err
     }
 
-    log.Printf(string(body))
+    fmt.Println(string(body))
 
     // create the req object
     req, err := http.NewRequest("POST", "https://api.ciscospark.com/v1/messages", bytes.NewReader(body))
@@ -85,7 +85,7 @@ func sendMessageToSpark(message *SparkMessage) (error) {
     // error handling
     if resp.StatusCode != 200 {
         body, _ := ioutil.ReadAll(resp.Body)
-        log.Printf(string(body))
+        fmt.Println(string(body))
         return errors.New(fmt.Sprintf("Message request returned status code: %s error body: %s", string(resp.StatusCode), string(body)))
     }
 
@@ -144,7 +144,7 @@ func sendImageToSpark(roomId string, path string) (error) {
     // simple error handling
     if resp.StatusCode != 200 {
         body, _ := ioutil.ReadAll(resp.Body)
-        log.Printf(string(body))
+        fmt.Println(string(body))
         return errors.New(fmt.Sprintf("Message request returned status code: %s error body: %s", string(resp.StatusCode), string(body)))
     }
 
@@ -167,10 +167,13 @@ func handleMessage(message *SparkMessage) {
 
     }
 
-    log.Printf(fmt.Sprintf("Recieved command: %s, input: %s", command, input))
+    fmt.Println(fmt.Sprintf("Recieved command: %s, input: %s", command, input))
 
     // handle our various commands
     switch(command) {
+        case "help":
+            newMessage := "Available Commands: \nhelp: get a list of commands \ngood: get some good text \ngenerate: generate a meme! ex. @Captain generate hey, i just made a meme!"
+            sendMessageToSpark(&SparkMessage{RoomId: message.RoomId, Text:newMessage})
         case "good":
             sendMessageToSpark(&SparkMessage{RoomId: message.RoomId, Text:"good job!"})
             break
@@ -261,20 +264,20 @@ func handleWebhook(w http.ResponseWriter, r *http.Request) {
     // parse the webhook post data to get the message id.
     body, err := ioutil.ReadAll(r.Body)
     if err != nil {
-        log.Printf(err.Error())
+        fmt.Println(err.Error())
         return
     }
 
     var sparkWebhook SparkWebhook
     if err := json.Unmarshal(body, &sparkWebhook); err != nil {
-        log.Printf(err.Error())
+        fmt.Println(err.Error())
         return
     }
 
     // use the message id to get a message struct containing more message info
     message, err := getMessage(sparkWebhook.Data.Id)
     if err != nil {
-        log.Printf(err.Error())
+        fmt.Println(err.Error())
         return
     }
 
