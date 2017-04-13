@@ -200,7 +200,7 @@ func generateMeme(outputPath string, text string) (string, error) {
 
     m := gg.NewContext(w, h)
     m.DrawImage(img, 0, 0)
-    m.LoadFontFace("/Library/Fonts/Impact.ttf", fontSize)
+    m.LoadFontFace("Impact.ttf", fontSize)
 
     // Apply black stroke
     m.SetHexColor("#000")
