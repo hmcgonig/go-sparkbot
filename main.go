@@ -153,7 +153,6 @@ func sendImageToSpark(roomId string, path string) (error) {
 
 func handleMessage(message *SparkMessage) {
     messageContents := message.Text
-    messageContents = "Captain asdasdasd woot this is a string"
 
     tmp := strings.Fields(messageContents)
     var command string
