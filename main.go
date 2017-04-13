@@ -188,6 +188,22 @@ func generateMeme(outputPath string, text string) (string, error) {
     path := "picard.jpg"
     const fontSize = 36
 
+    // separate toptext and bottomtext
+    var topText = ""
+    var bottomText = ""
+
+    textFields := strings.Fields(text)
+    textLength := len(textFields)
+    if textLength > 3 {
+        // find text midpoint
+        midpoint := (textLength/2)
+
+        topText = strings.Join(textFields[:midpoint], " ")
+        bottomText = strings.Join(textFields[midpoint:], " ")
+    } else {
+        bottomText = text
+    }
+
     file, err := os.Open(path)
     if err != nil {
         return "", err
@@ -211,15 +227,29 @@ func generateMeme(outputPath string, text string) (string, error) {
             if dx*dx+dy*dy >= strokeSize*strokeSize {
                 continue
             }
-            x := float64(w/2 + dx)
-            y := float64(h - fontSize + dy)
-            m.DrawStringAnchored(text, x, y, 0.5, 0.5)
+
+            if topText != "" {
+                topX := float64(w/2 + dx)
+                topY := float64(fontSize + dy)
+                m.DrawStringAnchored(topText, topX, topY, 0.5, 0.5)
+            }
+
+            if bottomText != "" {
+                bottomX := float64(w/2 + dx)
+                bottomY := float64(h - fontSize + dy)
+                m.DrawStringAnchored(bottomText, bottomX, bottomY, 0.5, 0.5)
+            }
         }
     }
 
-    // Apply white fill
+    // Apply white fill as needed
     m.SetHexColor("#FFF")
-    m.DrawStringAnchored(text, float64(w)/2, float64(h)-fontSize, 0.5, 0.5)
+    if topText != "" {
+        m.DrawStringAnchored(topText, float64(w)/2, fontSize, 0.5, 0.5)
+    }
+    if bottomText != "" {
+        m.DrawStringAnchored(bottomText, float64(w) / 2, float64(h) - fontSize, 0.5, 0.5)
+    }
     m.SavePNG(outputPath)
 
     return outputPath, nil
