@@ -175,6 +175,7 @@ func handleMessage(message *SparkMessage) {
             newMessage := "Available Commands: \n" +
                 "help: get a list of commands \n" +
                 "good: get some good text \n" +
+                "bad: :( \n" +
                 "picard: generate a meme! ex. @Captain picard hey, i just made a meme!"
             sendMessageToSpark(&SparkMessage{RoomId: message.RoomId, Text:newMessage})
         case "good":
