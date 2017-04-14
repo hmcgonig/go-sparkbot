@@ -172,14 +172,20 @@ func handleMessage(message *SparkMessage) {
     // handle our various commands
     switch(command) {
         case "help":
-            newMessage := "Available Commands: \nhelp: get a list of commands \ngood: get some good text \ngenerate: generate a meme! ex. @Captain generate hey, i just made a meme!"
+            newMessage := "Available Commands: \n" +
+                "help: get a list of commands \n" +
+                "good: get some good text \n" +
+                "picard: generate a meme! ex. @Captain picard hey, i just made a meme!"
             sendMessageToSpark(&SparkMessage{RoomId: message.RoomId, Text:newMessage})
         case "good":
             sendMessageToSpark(&SparkMessage{RoomId: message.RoomId, Text:"good job!"})
             break
-        case "generate": // generate a meme image using the input and send it to spark
+        case "bad":
+            sendMessageToSpark(&SparkMessage{RoomId: message.RoomId, Text:"bad :("})
+            break
+        case "picard": // generate a meme image using the input and send it to spark
             outputPath := "out.jpg"
-            generateMeme(outputPath, input)
+            generateMeme("picard.jpg", outputPath, input)
             sendImageToSpark(message.RoomId, outputPath)
             break
         default:
@@ -187,8 +193,7 @@ func handleMessage(message *SparkMessage) {
     }
 }
 
-func generateMeme(outputPath string, text string) (string, error) {
-    path := "picard.jpg"
+func generateMeme(sourcePath string, outputPath string, text string) (string, error) {
     const fontSize = 36
 
     // separate toptext and bottomtext
@@ -207,7 +212,7 @@ func generateMeme(outputPath string, text string) (string, error) {
         bottomText = text
     }
 
-    file, err := os.Open(path)
+    file, err := os.Open(sourcePath)
     if err != nil {
         return "", err
     }
