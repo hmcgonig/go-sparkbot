@@ -93,6 +93,11 @@ func main() {
         panic("Please set SPARK_BOT_EMAIL environment variable.")
     }
 
+    port := os.Getenv("PORT")
+    if len(port) == 0 { // default the port to 8080 for local testing
+        port = "8080"
+    }
+
     http.HandleFunc("/", handleWebhook)
-    log.Fatal(http.ListenAndServe(fmt.Sprintf(":%s", getenv("PORT", "8080")), nil))
+    log.Fatal(http.ListenAndServe(fmt.Sprintf(":%s", port), nil))
 }
