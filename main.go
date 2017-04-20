@@ -18,12 +18,10 @@ func handleMessage(message *SparkMessage) {
     var input string
     if (len(tmp) > 1) { // there was a command specified. index 0 will always be the tagged name of the bot.
         command = tmp[1]
-
         if (len(tmp) > 2) { // there was input after the command. index 1 is always the command.
             // cut the first two words from the message, join the rest back together with spaces
             input = strings.Join(tmp[2:], " ")
         }
-
     }
 
     log.Println(fmt.Sprintf("Recieved command: %s, input: %s", command, input))
