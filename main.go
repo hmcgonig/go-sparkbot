@@ -44,8 +44,8 @@ func handleMessage(message *SparkMessage) {
             sendMessageToSpark(&SparkMessage{RoomId: message.RoomId, Text:"bad :("})
             break
         case "picard": // generate a meme image using the input and send it to spark
-            outputPath := "out.jpg"
-            generateMeme("picard.jpg", outputPath, input)
+            outputPath := "resources/out.jpg"
+            generateMeme("resources/picard.jpg", outputPath, input)
             sendImageToSpark(message.RoomId, outputPath)
             break
         default:
