@@ -21,32 +21,12 @@ var sparkBotEmail = os.Getenv("SPARK_BOT_EMAIL")
 func getMessage(messageId string) (SparkMessage, error) {
     var sparkMessage SparkMessage
 
-    client := &http.Client{}
-
-    // create the request
-    req, err := http.NewRequest("GET", fmt.Sprintf("https://api.ciscospark.com/v1/messages/%s", messageId), nil)
+    responseBody, err := doRequest("GET", map[string]string { "Content-type": "application/json", "Authorization": fmt.Sprintf("Bearer %s", sparkBearerToken) }, fmt.Sprintf("https://api.ciscospark.com/v1/messages/%s", messageId), 200, nil)
     if err != nil {
         return sparkMessage, err
     }
 
-    // add headers
-    req.Header.Add("Authorization", fmt.Sprintf("Bearer %s", sparkBearerToken))
-
-    // do the request
-    resp, err := client.Do(req)
-    defer resp.Body.Close()
-
-    // error handling
-    if resp.StatusCode != 200 {
-        return sparkMessage, errors.New(fmt.Sprintf("Message request returned status code: %d", int(resp.StatusCode)))
-    }
-
-    body, err := ioutil.ReadAll(resp.Body)
-    if err != nil {
-        return sparkMessage, err
-    }
-
-    if err := json.Unmarshal(body, &sparkMessage); err != nil {
+    if err := json.Unmarshal(responseBody, &sparkMessage); err != nil {
         return sparkMessage, err
     }
 
@@ -54,37 +34,10 @@ func getMessage(messageId string) (SparkMessage, error) {
 }
 
 func sendMessageToSpark(message *SparkMessage) (error) {
-    client := &http.Client{}
-
-    // marshal the message
-    body, err := json.Marshal(message)
+    _, err := doRequest("POST", map[string]string { "Content-type": "application/json", "Authorization": fmt.Sprintf("Bearer %s", sparkBearerToken) }, "https://api.ciscospark.com/v1/messages", 200, message)
     if err != nil {
         return err
     }
-
-    log.Println(string(body))
-
-    // create the req object
-    req, err := http.NewRequest("POST", "https://api.ciscospark.com/v1/messages", bytes.NewReader(body))
-    if err != nil {
-        return err
-    }
-
-    // add headers
-    req.Header.Add("Authorization", fmt.Sprintf("Bearer %s", sparkBearerToken))
-    req.Header.Add("Content-Type", "Application/json")
-
-    // do the req
-    resp, err := client.Do(req)
-    defer resp.Body.Close()
-
-    // error handling
-    if resp.StatusCode != 200 {
-        body, _ := ioutil.ReadAll(resp.Body)
-        log.Println(string(body))
-        return errors.New(fmt.Sprintf("Message request returned status code: %d; error body: %s", int(resp.StatusCode), string(body)))
-    }
-
     return nil
 }
 
