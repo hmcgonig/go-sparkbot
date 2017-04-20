@@ -38,7 +38,7 @@ func getMessage(messageId string) (SparkMessage, error) {
 
     // error handling
     if resp.StatusCode != 200 {
-        return sparkMessage, errors.New(fmt.Sprintf("Message request returned status code: %s", string(resp.StatusCode)))
+        return sparkMessage, errors.New(fmt.Sprintf("Message request returned status code: %d", int(resp.StatusCode)))
     }
 
     body, err := ioutil.ReadAll(resp.Body)
@@ -82,7 +82,7 @@ func sendMessageToSpark(message *SparkMessage) (error) {
     if resp.StatusCode != 200 {
         body, _ := ioutil.ReadAll(resp.Body)
         log.Println(string(body))
-        return errors.New(fmt.Sprintf("Message request returned status code: %s error body: %s", string(resp.StatusCode), string(body)))
+        return errors.New(fmt.Sprintf("Message request returned status code: %d; error body: %s", int(resp.StatusCode), string(body)))
     }
 
     return nil
@@ -141,7 +141,7 @@ func sendImageToSpark(roomId string, path string) (error) {
     if resp.StatusCode != 200 {
         body, _ := ioutil.ReadAll(resp.Body)
         log.Println(string(body))
-        return errors.New(fmt.Sprintf("Message request returned status code: %s error body: %s", string(resp.StatusCode), string(body)))
+        return errors.New(fmt.Sprintf("Message request returned status code: %d; error body: %s", int(resp.StatusCode), string(body)))
     }
 
     return nil
