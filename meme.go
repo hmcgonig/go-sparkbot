@@ -23,7 +23,7 @@ func generateMeme(sourcePath string, outputPath string, text string) (string, er
     h := r.Dy()
     m := gg.NewContext(w, h)
     m.DrawImage(img, 0, 0)
-    m.LoadFontFace("Impact.ttf", fontSize)
+    m.LoadFontFace("resources/Impact.ttf", fontSize)
 
     // Apply black stroke
     m.SetHexColor("#000")
