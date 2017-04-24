@@ -82,13 +82,13 @@ func handleWebhook(w http.ResponseWriter, r *http.Request) {
     fmt.Fprintf(w, "it wark.")
 }
 
-func main() {
-    if len(os.Getenv("SPARK_BEARER_TOKEN")) == 0 {
-        panic("Please set SPARK_BEARER_TOKEN environment variable.")
-    }
+var requiredEnv = []string{"SPARK_BEARER_TOKEN", "SPARK_BOT_EMAIL"}
 
-    if len(os.Getenv("SPARK_BOT_EMAIL")) == 0 {
-        panic("Please set SPARK_BOT_EMAIL environment variable.")
+func main() {
+    for i := range requiredEnv {
+        if len(os.Getenv(requiredEnv[i])) == 0 {
+            panic(fmt.Sprintf("Please set %s environment variable.", requiredEnv[i]))
+        }
     }
 
     port := os.Getenv("PORT")
